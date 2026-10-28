@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: leogar-lms
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: gunicorn --chdir backend app:app --workers 2 --bind 0.0.0.0:$PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PASS_MARK
+        value: "60"
+      - key: DB_PATH
+        value: /data/lms.db
+    disk:
+      name: leogar-data
+      mountPath: /data
+      sizeGB: 1
